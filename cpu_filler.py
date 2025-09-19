@@ -38,4 +38,4 @@ if __name__ == "__main__":
         processes.append(p)
 
     for p in processes:
-        p.join().
+        p.join()
