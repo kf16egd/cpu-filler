@@ -5,14 +5,14 @@ import multiprocessing
 # TARGET_CPU_PERCENT means total system load target (0~100%), achieved by making all cores reach TARGET_CPU_PERCENT
 TARGET_CPU_PERCENT = float(os.getenv("TARGET_CPU", "60"))
 NUM_CORES = os.cpu_count()
-INTERVAL = 0.1  # seconds
+ADJUST_STEP = float(os.getenv("ADJUST_STEP", "0.2"))  # seconds - adjustable step for faster yielding
 
 def cpu_fill_worker(target_percent):
     """
     Busy loop to keep this core's CPU usage at target_percent percent.
     """
-    work_time = INTERVAL * target_percent / 100
-    sleep_time = INTERVAL - work_time
+    work_time = ADJUST_STEP * target_percent / 100
+    sleep_time = ADJUST_STEP - work_time
     while True:
         start = time.time()
         # Busy wait for work_time seconds
