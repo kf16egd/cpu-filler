@@ -1,11 +1,12 @@
-# Dynamic CPU / Memory Filler
+# Dynamic CPU & Memory Filler
 
-This project automatically fills system CPU and/or memory usage up to a target percentage.  
+This project automatically fills system CPU **and** memory usage up to target percentages simultaneously.  
 It is designed for testing, benchmarking, or reserving system resources.
 
 ## Features
 
-- Dynamically compensates to reach your desired CPU and/or memory usage
+- Fills CPU and memory at the same time by default
+- Dynamically compensates to reach your desired usage levels
 - Configurable via environment variables
 - Docker-ready
 
@@ -19,29 +20,8 @@ docker build -t cpu-filler .
 
 ### Run the Container
 
-**CPU filler only (default)**
-
 ```bash
 docker run --rm \
-  -e MODE=cpu \
-  -e TARGET_CPU=60 \
-  cpu-filler
-```
-
-**Memory filler only**
-
-```bash
-docker run --rm \
-  -e MODE=mem \
-  -e TARGET_MEM=70 \
-  cpu-filler
-```
-
-**Both CPU and memory fillers**
-
-```bash
-docker run --rm \
-  -e MODE=all \
   -e TARGET_CPU=60 \
   -e TARGET_MEM=70 \
   cpu-filler
@@ -51,12 +31,23 @@ docker run --rm \
 
 | Variable | Description | Default |
 |---|---|---|
-| `MODE` | Which filler to run: `cpu`, `mem`, or `all` | `cpu` |
 | `TARGET_CPU` | Target total CPU usage percentage | `60` |
 | `ADJUST_STEP` | CPU load adjustment step per interval | `0.2` |
 | `TARGET_MEM` | Target total memory usage percentage | `60` |
 | `MEM_ADJUST_STEP_MB` | Memory allocation/release step size in MB | `64` |
 | `MEM_INTERVAL` | Memory check interval in seconds | `1.0` |
+
+### Run individual fillers
+
+If you only need one of the fillers, you can override the command:
+
+```bash
+# CPU only
+docker run --rm -e TARGET_CPU=60 cpu-filler python /cpu_filler.py
+
+# Memory only
+docker run --rm -e TARGET_MEM=70 cpu-filler python /mem_filler.py
+```
 
 ## Multi-Architecture Images
 

@@ -8,6 +8,9 @@ INTERVAL = float(os.getenv("MEM_INTERVAL", "1.0"))
 # ADJUST_STEP_MB default value is 64 MB, allow environment variable MEM_ADJUST_STEP_MB to override
 ADJUST_STEP_MB = float(os.getenv("MEM_ADJUST_STEP_MB", "64"))
 
+PAGE_SIZE = 4096  # bytes; used to touch each OS memory page after allocation
+
+
 def mem_fill():
     """
     Allocate or release memory chunks to keep system memory usage at TARGET_MEM_PERCENT.
@@ -24,7 +27,7 @@ def mem_fill():
             try:
                 buf = bytearray(chunk_size)
                 # Write to each page to ensure the OS actually commits the memory
-                for i in range(0, len(buf), 4096):
+                for i in range(0, len(buf), PAGE_SIZE):
                     buf[i] = 1
                 allocated.append(buf)
             except MemoryError:
