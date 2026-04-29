@@ -1,11 +1,12 @@
-# Dynamic CPU Filler
+# Dynamic CPU & Memory Filler
 
-This project automatically fills system CPU usage up to a target percentage.  
-It is designed for testing, benchmarking, or reserving CPU resources.
+This project automatically fills system CPU **and** memory usage up to target percentages simultaneously.  
+It is designed for testing, benchmarking, or reserving system resources.
 
 ## Features
 
-- Dynamically compensates to reach your desired CPU usage
+- Fills CPU and memory at the same time by default
+- Dynamically compensates to reach your desired usage levels
 - Configurable via environment variables
 - Docker-ready
 
@@ -22,14 +23,31 @@ docker build -t cpu-filler .
 ```bash
 docker run --rm \
   -e TARGET_CPU=60 \
-  -e DURATION_SEC=600 \
-  -e THREADS=2 \
+  -e TARGET_MEM=70 \
   cpu-filler
 ```
 
-- `TARGET_CPU`: Target total CPU usage percentage (default: 60)
-- `DURATION_SEC`: Duration to run, in seconds (default: 3600)
-- `THREADS`: Number of threads to use (default: number of logical CPUs)
+### Environment Variables
+
+| Variable | Description | Default |
+|---|---|---|
+| `TARGET_CPU` | Target total CPU usage percentage | `60` |
+| `ADJUST_STEP` | CPU load adjustment step per interval | `0.2` |
+| `TARGET_MEM` | Target total memory usage percentage | `60` |
+| `MEM_ADJUST_STEP_MB` | Memory allocation/release step size in MB | `64` |
+| `MEM_INTERVAL` | Memory check interval in seconds | `1.0` |
+
+### Run individual fillers
+
+If you only need one of the fillers, you can override the command:
+
+```bash
+# CPU only
+docker run --rm -e TARGET_CPU=60 cpu-filler python /cpu_filler.py
+
+# Memory only
+docker run --rm -e TARGET_MEM=70 cpu-filler python /mem_filler.py
+```
 
 ## Multi-Architecture Images
 
